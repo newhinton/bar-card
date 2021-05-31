@@ -24,81 +24,60 @@ class GaugeCard extends HTMLElement {
     const content = document.createElement('div');
     const style = document.createElement('style');
     style.textContent = `
-      ha-card {
-        --base-unit: ${cardConfig.scale};
-        height: calc(var(--base-unit)*3);
-        position: relative;
-      }
-      .container{
-        width: calc(var(--base-unit) * 4);
-        height: calc(var(--base-unit) * 2);
-        position: absolute;
-        top: calc(var(--base-unit)*1.5);
-        left: 50%;
-        overflow: hidden;
+    .name {
+	text-align: center;
+        transform: translate(0, -20px);
+    }
+    .value-text {
+        font-size: 45px;
+        fill: var(--primary-text-color);
+        transform: translate(0, -40px);
         text-align: center;
-        transform: translate(-50%, -50%);
-      }
-      .gauge-a{
-        z-index: 1;
-        position: absolute;
-        background-color: var(--primary-background-color);
-        width: calc(var(--base-unit) * 4);
-        height: calc(var(--base-unit) * 2);
-        top: 0%;
-        border-radius:calc(var(--base-unit) * 2.5) calc(var(--base-unit) * 2.5) 0px 0px ;
-      }
-      .gauge-b{
-        z-index: 3;
-        position: absolute;
-        background-color: var(--paper-card-background-color);
-        width: calc(var(--base-unit) * 2.5);
-        height: calc(var(--base-unit) * 1.25);
-        top: calc(var(--base-unit) * 0.75);
-        margin-left: calc(var(--base-unit) * 0.75);
-        margin-right: auto;
-        border-radius: calc(var(--base-unit) * 2.5) calc(var(--base-unit) * 2.5) 0px 0px ;
-      }
-      .gauge-c{
-        z-index: 2;
-        position: absolute;
-        background-color: var(--label-badge-yellow);
-        width: calc(var(--base-unit) * 4);
-        height: calc(var(--base-unit) * 2);
-        top: calc(var(--base-unit) * 2);
+    }
+    .gauge {
+        display: block;
+    }
+    .dial {
+        fill: none;
+        stroke: var(--primary-background-color);
+        stroke-width: 8;
+	stroke-linecap: round;
+    }
+    .value {
+        fill: none;
+        stroke-width: 8;
+        stroke: var(--gauge-color);
+	stroke-linecap: round;
+        transition: all 1s ease 0s;
+	/*https://stackoverflow.com/a/41488264*/
+        stroke-dasharray: 300;
+        stroke-dashoffset: -150;
+        animation: dash 2s linear forwards;
+    }
+    ha-gauge-custom{
+        width: 100%;
+        max-width: 250px;
+        display: block;
         margin-left: auto;
         margin-right: auto;
-        border-radius: 0px 0px calc(var(--base-unit) * 2) calc(var(--base-unit) * 2) ;
-        transform-origin: center top;
-        transition: all 1.3s ease-in-out;
+        padding-top: 10px;
+    }
+    @keyframes dash {
+      to {
+        stroke-dashoffset: 100;
       }
-      .gauge-data{
-        z-index: 4;
-        color: var(--primary-text-color);
-        line-height: calc(var(--base-unit) * 0.3);
-        position: absolute;
-        width: calc(var(--base-unit) * 4);
-        height: calc(var(--base-unit) * 2.1);
-        top: calc(var(--base-unit) * 1.2);
-        margin-left: auto;
-        margin-right: auto;
-        transition: all 1s ease-out;
-      }
-      .gauge-data #percent{
-        font-size: calc(var(--base-unit) * 0.55);
-      }
-      .gauge-data #title{
-        padding-top: calc(var(--base-unit) * 0.15);
-        font-size: calc(var(--base-unit) * 0.30);
-      }
+    }
+
     `;
     content.innerHTML = `
-      <div class="container">
-        <div class="gauge-a"></div>
-        <div class="gauge-b"></div>
-        <div class="gauge-c" id="gauge"></div>
-        <div class="gauge-data"><div id="percent"></div><div id="title"></div></div>
-      </div>
+      <ha-gauge-custom id="wrapper" style="--gauge-color:var(--label-badge-blue);">
+        <svg viewBox="0 0 100 60" class="gauge">
+          <path id="dial" class="dial" d="M 10 50 A 40 40 0 0 1 90 50"></path>
+          <path id="gauge" class="value"></path>
+        </svg>
+        <div id="value-text" class="value-text">0 %</div>
+        <div id="title" class="name">name</div>
+      </ha-gauge-custom>
     `;
     card.appendChild(content);
     card.appendChild(style);
@@ -110,12 +89,12 @@ class GaugeCard extends HTMLElement {
   }
 
   _splitEntityAndAttribute(entity) {
-      let parts = entity.split('.');
-      if (parts.length < 3) {
-          return { entity: entity };
-      }
+    let parts = entity.split('.');
+    if (parts.length < 3) {
+      return { entity: entity };
+    }
 
-      return { attribute: parts.pop(), entity: parts.join('.') };
+    return { attribute: parts.pop(), entity: parts.join('.') };
   }
 
   _fire(type, detail, options) {
@@ -133,15 +112,15 @@ class GaugeCard extends HTMLElement {
   }
 
   _translateTurn(value, config) {
-    return 5 * (value - config.min) / (config.max - config.min)
+    return 180 * (value - config.min) / (config.max - config.min)
   }
 
   _computeSeverity(stateValue, sections) {
     let numberValue = Number(stateValue);
     const severityMap = {
       red: "var(--label-badge-red)",
+      yellow: "var(--label-badge-yellow)",
       green: "var(--label-badge-green)",
-      amber: "var(--label-badge-yellow)",
       normal: "var(--label-badge-blue)",
     }
     if (!sections) return severityMap["normal"];
@@ -182,11 +161,17 @@ class GaugeCard extends HTMLElement {
 
     const root = this.shadowRoot;
     if (entityState !== this._entityState) {
-      root.getElementById("percent").textContent = `${entityState} ${measurement}`;
-      root.getElementById("title").textContent = config.title;
-      const turn = this._translateTurn(entityState, config) / 10;
-      root.getElementById("gauge").style.transform = `rotate(${turn}turn)`;
-      root.getElementById("gauge").style.backgroundColor = this._computeSeverity(entityState, config.severity);
+      root.getElementById("value-text").textContent = `${entityState} ${measurement}`;
+      var title = config.entity;
+      if (typeof config.name !== 'undefined'){
+        title = config.name;
+      }
+      root.getElementById("title").innerHTML = title;
+      root.getElementById("dial").setAttribute("d", this.describeArc(50, 50, 40, 0, 180));
+      const turn = this._translateTurn(entityState, config);
+      root.getElementById("gauge").setAttribute("d", this.describeArc(50, 50, 40, 0, turn));
+      root.getElementById("wrapper").style = "--gauge-color:"+this._computeSeverity(entityState, config.severity);
+
       this._entityState = entityState;
     }
     root.lastChild.hass = hass;
@@ -194,6 +179,27 @@ class GaugeCard extends HTMLElement {
 
   getCardSize() {
     return 1;
+  }
+
+  /*https://stackoverflow.com/a/18473154*/
+  describeArc(x, y, radius, startAngle, endAngle){
+    var test = function (centerX, centerY, radius, angleInDegrees) {
+      var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
+      return {
+        x: centerX + (radius * Math.cos(angleInRadians)),
+        y: centerY + (radius * Math.sin(angleInRadians))
+      };
+    }
+    startAngle = startAngle-90
+    endAngle = endAngle-90
+    var start = test(x, y, radius, endAngle);
+    var end = test(x, y, radius, startAngle);
+    var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+    var d = [
+      "M", start.x, start.y,
+      "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
+    ].join(" ");
+    return d;
   }
 }
 
