@@ -169,7 +169,9 @@ class GaugeCard extends HTMLElement {
       root.getElementById("title").innerHTML = title;
       root.getElementById("dial").setAttribute("d", this.describeArc(50, 50, 40, 0, 180));
       const turn = this._translateTurn(entityState, config);
-      root.getElementById("gauge").setAttribute("d", this.describeArc(50, 50, 40, 0, turn));
+      if(turn > 0){
+          root.getElementById("gauge").setAttribute("d", this.describeArc(50, 50, 40, 0, turn));
+      }
       root.getElementById("wrapper").style = "--gauge-color:"+this._computeSeverity(entityState, config.severity);
 
       this._entityState = entityState;
