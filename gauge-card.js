@@ -161,13 +161,12 @@ class GaugeCard extends HTMLElement {
 
     const root = this.shadowRoot;
     if (entityState !== this._entityState) {
+      let text = entityState +" "+measurement
       if (entityState==="unknown"){
-        entityState="⚠️"
-      } else {
-        entityState = entityState +" "+measurement
+        text="⚠️"
       }
 
-      root.getElementById("value-text").textContent = `${entityState}`;
+      root.getElementById("value-text").textContent = `${text}`;
       var title = config.entity;
       if (typeof config.name !== 'undefined'){
         title = config.name;
