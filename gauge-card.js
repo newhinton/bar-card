@@ -29,7 +29,7 @@ class GaugeCard extends HTMLElement {
         transform: translate(0, -20px);
     }
     .value-text {
-        font-size: 45px;
+        font-size: 4vh;
         fill: var(--primary-text-color);
         transform: translate(0, -40px);
         text-align: center;
@@ -75,7 +75,7 @@ class GaugeCard extends HTMLElement {
           <path id="dial" class="dial" d="M 10 50 A 40 40 0 0 1 90 50"></path>
           <path id="gauge" class="value"></path>
         </svg>
-        <div id="value-text" class="value-text">0 %</div>
+        <div id="value-text" class="value-text">⚠️</div>
         <div id="title" class="name">name</div>
       </ha-gauge-custom>
     `;
@@ -161,7 +161,13 @@ class GaugeCard extends HTMLElement {
 
     const root = this.shadowRoot;
     if (entityState !== this._entityState) {
-      root.getElementById("value-text").textContent = `${entityState} ${measurement}`;
+      if (entityState==="unknown"){
+        entityState="⚠️"
+      } else {
+        entityState = entityState +" "+measurement
+      }
+
+      root.getElementById("value-text").textContent = `${entityState}`;
       var title = config.entity;
       if (typeof config.name !== 'undefined'){
         title = config.name;
