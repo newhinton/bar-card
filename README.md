@@ -2,7 +2,7 @@
 
 A simple bar-graph. Based on https://github.com/newhinton/gauge-card.
 
-![Example Image](https://github.com/newhinton/gauge-card/blob/master/example.png?raw=true)
+![Example Image](example.png?raw=true)
 
 **Options**
 
