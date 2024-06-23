@@ -1,5 +1,5 @@
-import { BarCard } from "./bar-card";
-import { BarCardEditor } from "./bar-card-editor";
+import { BarCard } from "./card";
+import { BarCardEditor } from "./editor";
 
 
 customElements.define('bar-card', BarCard);

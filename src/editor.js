@@ -1,5 +1,3 @@
-// import { LitElement, html } from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
-//from 'lit';
 import { css, html, LitElement } from 'lit';
 
 export class BarCardEditor extends LitElement {
@@ -49,14 +47,14 @@ export class BarCardEditor extends LitElement {
 	      .hass=${this._hass}
 	      .data=${this._config}
 	      .schema=${[
-	        {name: "entity", selector: { entity: {} }},
-		{name: "entity_secondary", selector: { entity: { domain: "sensor" } }},
-		{name: "icon", selector: { icon: {} }},
-		{name: "name", selector: { text: {} }},
-		{name: "severity_green", selector: { number: { min: 0, max: 100}}},
-		{name: "severity_yellow", selector: { number: { min: 0, max: 100}}},
-		{name: "severity_red", selector: { number: { min: 0, max: 100, value: 50} }}
-          ]}
+        { name: "entity", selector: { entity: {} } },
+        { name: "entity_secondary", selector: { entity: { domain: "sensor" } } },
+        { name: "icon", selector: { icon: {} } },
+        { name: "name", selector: { text: {} } },
+        { name: "severity_green", selector: { number: { min: 0, max: 100 } } },
+        { name: "severity_yellow", selector: { number: { min: 0, max: 100 } } },
+        { name: "severity_red", selector: { number: { min: 0, max: 100, value: 50 } } }
+      ]}
         }}
       ]}
       .computeLabel=${this._computeLabel}

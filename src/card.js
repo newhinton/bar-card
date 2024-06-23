@@ -1,8 +1,8 @@
-// import { LitElement, html } from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
-//from 'lit';
 import { css, html, LitElement } from 'lit';
+import styles from './styles';
 
-export class BarCard extends HTMLElement {
+
+export class BarCard extends LitElement {
 
   static getConfigElement() {
     return document.createElement("bar-card-editor");
@@ -16,6 +16,8 @@ export class BarCard extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
   }
+
+  static styles = styles;
 
   setConfig(config) {
     this.config = config;
@@ -45,68 +47,26 @@ export class BarCard extends HTMLElement {
 
     const card = document.createElement('ha-card');
     const content = document.createElement('div');
-    const style = document.createElement('style');
-    style.textContent = `
-    .header-box {
-	display: flex;
-	padding-bottom: 10px;
-    }
-    .header-text {
-        flex: 1;
-    }
-    .header-icon {
-	padding: 0.5em;
-    }
-    .name {
-	font-size: 2vh;
-    }
-    .gauge {
-        display: block;
-    }
-    .dial {
-	fill: var(--primary-background-color);
-    }
-    .value {
-        fill: var(--gauge-color);
-        transition: all 1s ease 0s;
-	/*https://stackoverflow.com/a/41488264*/
-        animation: dash 2s linear forwards;
-    }
-    ha-gauge-custom{
-        width: 90%;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 10px;
-    }
-    @keyframes dash {
-      to {
-        stroke-dashoffset: 100;
-      }
-    }
-
-    `;
     content.innerHTML = `
       <ha-gauge-custom id="wrapper" style="--gauge-color:var(--label-badge-blue);">
-	<div class="header-box">
-		<div id="header-icon" class="header-icon"></div>
-		<div class="header-text">
-			<div id="title" class="name">name</div>
-		        <div>
-		                <span id="value-alt">⚠️</span>
-		                <span> - </span>
-                		<span id="value-text">⚠️</span>
-		        </div>
-		</div>
-	</div>
+        <div class="header-box">
+          <div id="header-icon" class="header-icon"></div>
+          <div class="header-text">
+            <div id="title" class="name">name</div>
+                  <div>
+                          <span id="value-alt">⚠️</span>
+                          <span> - </span>
+                          <span id="value-text">⚠️</span>
+                  </div>
+          </div>
+        </div>
         <svg viewBox="0 0 100 10" class="gauge">
-	  <rect width="100%" height="100%" rx="3" id="dial" class="dial"/>
-	  <rect width="100%" height="100%" rx="3" id="gauge" class="value"/>
+          <rect width="100%" height="100%" rx="3" id="dial" class="dial"/>
+          <rect width="100%" height="100%" rx="3" id="gauge" class="value"/>
         </svg>
       </ha-gauge-custom>
     `;
     card.appendChild(content);
-    card.appendChild(style);
     card.addEventListener('click', event => {
       this._fire('hass-more-info', { entityId: cardConfig.entity });
     });
@@ -165,8 +125,8 @@ export class BarCard extends HTMLElement {
   }
 
   _getEntityStateValue(entity, attribute) {
-    if(entity === undefined) {
-        return 0;
+    if (entity === undefined) {
+      return 0;
     }
     if (!attribute) {
       return entity.state;
@@ -180,7 +140,7 @@ export class BarCard extends HTMLElement {
     const entityState = this._getEntityStateValue(hass.states[config.entity], config.attribute);
     let measurement = "";
     if (config.measurement == null)
-      if(hass.states[config.entity] === undefined) {
+      if (hass.states[config.entity] === undefined) {
         measurement = 0;
       } else {
         measurement = hass.states[config.entity].attributes.unit_of_measurement;
@@ -192,7 +152,7 @@ export class BarCard extends HTMLElement {
     const entityStateSecondary = this._getEntityStateValue(hass.states[config.entity_secondary], config.attribute_secondary);
     let measurement_secondary = "";
     if (config.measurement_secondary == null)
-      if(hass.states[config.entity_secondary] === undefined) {
+      if (hass.states[config.entity_secondary] === undefined) {
         measurement = 0;
       } else {
         measurement = hass.states[config.entity_secondary].attributes.unit_of_measurement;
@@ -202,41 +162,41 @@ export class BarCard extends HTMLElement {
 
     const root = this.shadowRoot;
     if (entityState !== this._entityState) {
-      let text = entityState +" "+measurement
-      if (entityState==="unknown"){
-        text="⚠️"
+      let text = entityState + " " + measurement
+      if (entityState === "unknown") {
+        text = "⚠️"
       }
 
-      let text_alt = entityStateSecondary +" "+measurement_secondary
-      if (entityState==="unknown"){
-        text_alt="⚠️"
+      let text_alt = entityStateSecondary + " " + measurement_secondary
+      if (entityState === "unknown") {
+        text_alt = "⚠️"
       }
 
       root.getElementById("value-text").textContent = `${text}`;
       root.getElementById("value-alt").textContent = `${text_alt}`;
 
       var title = config.entity;
-      if (typeof config.name !== 'undefined'){
+      if (typeof config.name !== 'undefined') {
         title = config.name;
       }
       root.getElementById("title").innerHTML = title;
 
       var percent = (entityState - config.min) / (config.max - config.min);
-      root.getElementById("gauge").setAttribute("width", (percent*100)+"%");
+      root.getElementById("gauge").setAttribute("width", (percent * 100) + "%");
       var s_green = (typeof config.severity_green !== 'undefined') ? config.severity_green : 20;
       var s_yellow = (typeof config.severity_yellow !== 'undefined') ? config.severity_yellow : 60;
       var s_red = (typeof config.severity_red !== 'undefined') ? config.severity_red : 80;
-      var sections= {green: s_green, yellow: s_yellow, red: s_red};
+      var sections = { green: s_green, yellow: s_yellow, red: s_red };
 
-      root.getElementById("wrapper").style = "--gauge-color:"+this._computeSeverity(entityState, sections);
+      root.getElementById("wrapper").style = "--gauge-color:" + this._computeSeverity(entityState, sections);
 
       this._entityState = entityState;
 
       if (config.icon) {
-	let icon = document.createElement("ha-icon");
-	icon.setAttribute("icon", config.icon)
-	icon.setAttribute("class", "icon")
-	root.getElementById("header-icon").append(icon);
+        let icon = document.createElement("ha-icon");
+        icon.setAttribute("icon", config.icon)
+        icon.setAttribute("class", "icon")
+        root.getElementById("header-icon").append(icon);
       }
     }
     root.lastChild.hass = hass;
