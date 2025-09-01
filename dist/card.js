@@ -1,5 +1,3 @@
-// import { LitElement, html } from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
-//from 'lit';
 /**
  * @license
  * Copyright 2019 Google LLC
@@ -611,41 +609,8 @@ const $ab210b2da7b39b9d$export$f5c524615a7708d6 = {
 
 
 
-class $13bc0f3f43abb439$export$ac5c697e9c49bd62 extends HTMLElement {
-    static getConfigElement() {
-        return document.createElement("bar-card-editor");
-    }
-    static getStubConfig() {
-        return {
-            entity: ""
-        };
-    }
-    constructor(){
-        super();
-        this.attachShadow({
-            mode: "open"
-        });
-    }
-    setConfig(config) {
-        this.config = config;
-        if (!config.entity) throw new Error("Please define an entity");
-        if (!config.entity_secondary) throw new Error("Please define a secondary entity");
-        const root = this.shadowRoot;
-        if (root.lastChild) root.removeChild(root.lastChild);
-        const cardConfig = Object.assign({}, config);
-        if (!cardConfig.scale) cardConfig.scale = "50px";
-        if (!cardConfig.min) cardConfig.min = 0;
-        if (!cardConfig.max) cardConfig.max = 100;
-        const entityParts = this._splitEntityAndAttribute(cardConfig.entity);
-        cardConfig.entity = entityParts.entity;
-        if (entityParts.attribute) cardConfig.attribute = entityParts.attribute;
-        const entityParts2 = this._splitEntityAndAttribute(cardConfig.entity_secondary);
-        cardConfig.entity_secondary = entityParts2.entity;
-        if (entityParts2.attribute) cardConfig.attribute_secondary = entityParts2.attribute;
-        const card = document.createElement("ha-card");
-        const content = document.createElement("div");
-        const style = document.createElement("style");
-        style.textContent = `
+
+var $1a7c5d625ead7579$export$2e2bcd8739ae039 = (0, $def2de46b9306e8a$export$dbf350e5966cf602)`
     .header-box {
 	display: flex;
 	padding-bottom: 10px;
@@ -683,29 +648,63 @@ class $13bc0f3f43abb439$export$ac5c697e9c49bd62 extends HTMLElement {
         stroke-dashoffset: 100;
       }
     }
+`;
 
-    `;
+
+class $bf513b85805031e6$export$ac5c697e9c49bd62 extends (0, $ab210b2da7b39b9d$export$3f2f9f5909897157) {
+    static getConfigElement() {
+        return document.createElement("bar-card-editor");
+    }
+    static getStubConfig() {
+        return {
+            entity: ""
+        };
+    }
+    constructor(){
+        super();
+        this.attachShadow({
+            mode: "open"
+        });
+    }
+    static styles = (0, $1a7c5d625ead7579$export$2e2bcd8739ae039);
+    setConfig(config) {
+        this.config = config;
+        if (!config.entity) throw new Error("Please define an entity");
+        if (!config.entity_secondary) throw new Error("Please define a secondary entity");
+        const root = this.shadowRoot;
+        if (root.lastChild) root.removeChild(root.lastChild);
+        const cardConfig = Object.assign({}, config);
+        if (!cardConfig.scale) cardConfig.scale = "50px";
+        if (!cardConfig.min) cardConfig.min = 0;
+        if (!cardConfig.max) cardConfig.max = 100;
+        const entityParts = this._splitEntityAndAttribute(cardConfig.entity);
+        cardConfig.entity = entityParts.entity;
+        if (entityParts.attribute) cardConfig.attribute = entityParts.attribute;
+        const entityParts2 = this._splitEntityAndAttribute(cardConfig.entity_secondary);
+        cardConfig.entity_secondary = entityParts2.entity;
+        if (entityParts2.attribute) cardConfig.attribute_secondary = entityParts2.attribute;
+        const card = document.createElement("ha-card");
+        const content = document.createElement("div");
         content.innerHTML = `
       <ha-gauge-custom id="wrapper" style="--gauge-color:var(--label-badge-blue);">
-	<div class="header-box">
-		<div id="header-icon" class="header-icon"></div>
-		<div class="header-text">
-			<div id="title" class="name">name</div>
-		        <div>
-		                <span id="value-alt">\u{26A0}\u{FE0F}</span>
-		                <span> - </span>
-                		<span id="value-text">\u{26A0}\u{FE0F}</span>
-		        </div>
-		</div>
-	</div>
+        <div class="header-box">
+          <div id="header-icon" class="header-icon"></div>
+          <div class="header-text">
+            <div id="title" class="name">name</div>
+                  <div>
+                          <span id="value-alt">\u{26A0}\u{FE0F}</span>
+                          <span> - </span>
+                          <span id="value-text">\u{26A0}\u{FE0F}</span>
+                  </div>
+          </div>
+        </div>
         <svg viewBox="0 0 100 10" class="gauge">
-	  <rect width="100%" height="100%" rx="3" id="dial" class="dial"/>
-	  <rect width="100%" height="100%" rx="3" id="gauge" class="value"/>
+          <rect width="100%" height="100%" rx="3" id="dial" class="dial"/>
+          <rect width="100%" height="100%" rx="3" id="gauge" class="value"/>
         </svg>
       </ha-gauge-custom>
     `;
         card.appendChild(content);
-        card.appendChild(style);
         card.addEventListener("click", (event)=>{
             this._fire("hass-more-info", {
                 entityId: cardConfig.entity
@@ -775,8 +774,8 @@ class $13bc0f3f43abb439$export$ac5c697e9c49bd62 extends HTMLElement {
         const entityStateSecondary = this._getEntityStateValue(hass.states[config.entity_secondary], config.attribute_secondary);
         let measurement_secondary = "";
         if (config.measurement_secondary == null) {
-            if (hass.states[config.entity_secondary] === undefined) measurement = 0;
-            else measurement = hass.states[config.entity_secondary].attributes.unit_of_measurement;
+            if (hass.states[config.entity_secondary] === undefined) measurement_secondary = 0;
+            else measurement_secondary = hass.states[config.entity_secondary].attributes.unit_of_measurement;
         } else measurement_secondary = config.measurement_secondary;
         const root = this.shadowRoot;
         if (entityState !== this._entityState) {
@@ -819,10 +818,8 @@ class $13bc0f3f43abb439$export$ac5c697e9c49bd62 extends HTMLElement {
 }
 
 
-// import { LitElement, html } from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
-//from 'lit';
 
-class $d19bebf769da0ab2$export$d4ef2d7ef44050f4 extends (0, $ab210b2da7b39b9d$export$3f2f9f5909897157) {
+class $fc7d6e547b6fcb14$export$d4ef2d7ef44050f4 extends (0, $ab210b2da7b39b9d$export$3f2f9f5909897157) {
     static get properties() {
         return {
             hass: {},
@@ -928,14 +925,15 @@ class $d19bebf769da0ab2$export$d4ef2d7ef44050f4 extends (0, $ab210b2da7b39b9d$ex
 }
 
 
-customElements.define("bar-card", (0, $13bc0f3f43abb439$export$ac5c697e9c49bd62));
-customElements.define("bar-card-editor", (0, $d19bebf769da0ab2$export$d4ef2d7ef44050f4));
+customElements.define("bar-card", (0, $bf513b85805031e6$export$ac5c697e9c49bd62));
+customElements.define("bar-card-editor", (0, $fc7d6e547b6fcb14$export$d4ef2d7ef44050f4));
 window.customCards = window.customCards || [];
 window.customCards.push({
     type: "bar-card",
     name: "My Bar Card",
     description: "A custom bar card"
-}); // use this: https://community.home-assistant.io/t/custom-cards-with-gui-editor-as-of-2023/542254/8
+}); // https://github.com/home-assistant-tutorials/09.toggle-card-lit/tree/master/src
+ // https://community.home-assistant.io/t/custom-cards-with-gui-editor-as-of-2023/542254/8
 
 
 //# sourceMappingURL=card.js.map

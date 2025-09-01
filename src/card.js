@@ -153,9 +153,9 @@ export class BarCard extends LitElement {
     let measurement_secondary = "";
     if (config.measurement_secondary == null)
       if (hass.states[config.entity_secondary] === undefined) {
-        measurement = 0;
+        measurement_secondary = 0;
       } else {
-        measurement = hass.states[config.entity_secondary].attributes.unit_of_measurement;
+        measurement_secondary = hass.states[config.entity_secondary].attributes.unit_of_measurement;
       }
     else
       measurement_secondary = config.measurement_secondary;
